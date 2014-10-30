@@ -24,6 +24,11 @@ var images_container = 'images';
 
 var blobService = azure.createBlobService(storage_account,gallerieKey);
 
+app.all('*', function(req, res, next){
+    res.set("Connection", "close");
+    next();
+});
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.engine('html', require('ejs').renderFile);
