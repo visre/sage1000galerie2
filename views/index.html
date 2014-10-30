@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html ng-controller="ItemController as itemCtrl" ng-init="init()">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" type="text/css" href="/gallery/stylesheets/bootstrap.css"/>
+	<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css"> 
+	<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">	
+	<link rel="stylesheet" href="/gallery/stylesheets/mosaic.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="/gallery/stylesheets/fileinput.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="/gallery/stylesheets/bootstrap-multiselect.css" type="text/css" media="screen" />
+	
+	<script type="application/javascript" src="/gallery/javascripts/jquery-2.1.1.min.js"></script>
+	<script type="application/javascript" src="/gallery/javascripts/angular.js"></script>
+	<script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.11.2.js"></script>
+	<script type="application/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+	<script type="application/javascript" src="/gallery/javascripts/fileinput.js"></script>		
+	
+	<style type="text/css">
+		h2{
+			margin: 0;     
+			color: #D0D0D0;
+			padding-top: 20px;
+			font-size: 30px;
+			font-family: "trebuchet ms", sans-serif;    
+		}
+		.item{
+			text-align: center;
+			height: 200px;
+		}
+		.carousel{
+			margin-top: 20px;
+		}
+		.bs-example{
+			margin: 20px;
+		}
+
+		body
+			#content{ width:100% }
+			.clearfix{ display: block; height: 0; clear: both; visibility: hidden; }
+					
+			.details{ margin:5px; }	
+				h4{ font:300 13px 'Helvetica', Helvetica, Arial, sans-serif; line-height:100%; letter-spacing:0.10em; color:#fff; text-shadow:1px 1px 0 rgb(0,0,0); }
+				.details p{ font:300 12px 'Lucida Grande', Tahoma, Verdana, sans-serif; color:#aaa; text-shadow:1px 1px 0 rgb(0,0,0);}
+				.details a{ text-decoration:none; }
+	</style> 
+</head>
+<body>
+	<div class="container" ng-controller="ContainerController as containerCtrl">
+		<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+			<div class="container">
+				<div class="navbar-header">
+				  <a class="navbar-brand" href="#">Sage</a>
+				</div>
+				<div class="navbar-collapse collapse">
+					<ul class="nav navbar-nav">
+						<li><a href="#" ng-click="itemCtrl.setCategory('All'); containerCtrl.selectTab(0)">Home</a></li>
+						<li><a href="#mobileapps" ng-click="itemCtrl.setCategory('Mobile Apps'); containerCtrl.selectTab(0)">Mobile Apps</a></li>
+						<li><a href="#dashboards" ng-click="itemCtrl.setCategory('Dashboards'); containerCtrl.selectTab(0)">Dashboards</a></li>
+						<li><a href="#activities" ng-click="itemCtrl.setCategory('Activities'); containerCtrl.selectTab(0)">Activities</a></li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li class="addProduct">
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="navbar navbar-inverse navbar-top" ng-show="(((category == 'Dashboards') || (category == 'Activities')) && (containerCtrl.isSelected(0)))">
+	        <div class="container">
+	            <div class="collapse navbar-collapse main-nav">
+	                <ul class="nav navbar-nav">
+	                    <li><a href="#admin" ng-click="itemCtrl.setApp('admin')" ng-show="containerCtrl.isAppExist('admin')">Administration</a></li>
+	                    <li><a href="#compta" ng-click="itemCtrl.setApp('compta')" ng-show="containerCtrl.isAppExist('compta')">Comptabilité</a></li>
+	                    <li><a href="#demat" ng-click="itemCtrl.setApp('demat')" ng-show="containerCtrl.isAppExist('demat')">Dématérialisation</a></li>
+	                    <li><a href="#ndf" ng-click="itemCtrl.setApp('ndf')" ng-show="containerCtrl.isAppExist('ndf')">Note de frais</a></li>
+	                    <li><a href="#prop" ng-click="itemCtrl.setApp('prop')" ng-show="containerCtrl.isAppExist('prop')">Processus opérationnelles</a></li>
+	                    <li><a href="#budget" ng-click="itemCtrl.setApp('budget')" ng-show="containerCtrl.isAppExist('budget')">Budget</a></li>
+	                    <li><a href="#immo" ng-click="itemCtrl.setApp('immo')" ng-show="containerCtrl.isAppExist('immo')">Immobilisation</a></li>
+	                    <li><a href="#rappro" ng-click="itemCtrl.setApp('rappro')" ng-show="containerCtrl.isAppExist('rappro')">Rapprochement bancaire</a></li>
+	                    <li><a href="#treso" ng-click="itemCtrl.setApp('treso')" ng-show="containerCtrl.isAppExist('treso')">Trésorerie</a></li>
+	                    <li><a href="#paiement" ng-click="itemCtrl.setApp('paiement')" ng-show="containerCtrl.isAppExist('paiement')">Moyens de paiements</a></li>
+	                    <li><a href="#garanfi" ng-click="itemCtrl.setApp('garanfi')" ng-show="containerCtrl.isAppExist('garanfi')">Garanties financières</a></li>
+	                </ul>
+	            </div>
+	        </div>
+	    </div>
+	    <div class="container">	
+			<div class="row" id="content" ng-show="containerCtrl.isSelected(0)" ng-cloak>	
+				<div bar2 class="mosaic-block bar2" ng-repeat="item in items" ng-hide="itemCtrl.hideItem(item)">
+					<a style="text-decoration:none;" class="mosaic-overlay" href="#">
+						<div class="details">
+							<h4>{{item.name}}</h4><br/>
+							<div class="thumbButton" name="{{item.link}}" id="{{item.category}}"></div>
+						</div>
+					</a>
+					<div class="mosaic-backdrop">
+						<a href="#" ng-click="itemCtrl.setItem(item.name); containerCtrl.selectTab(1)">
+							<img style="width:100%; height:100%;" data-ng-src='https://gallerie.blob.core.windows.net/images/{{item.file}}' onerror="this.src='https://gallerie.blob.core.windows.net/packages/no-img.jpg'"/>
+						</a>
+					</div>
+				</div>
+				<div class="clearfix"></div>
+			</div>
+
+			<div class="row" ng-show="containerCtrl.isSelected(1)" ng-cloak>
+				<div ng-repeat="item in items" ng-show="item.name == name" ng-cloak>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3> {{item.name}} </h3>	
+						</div>
+						<div class="panel-body">
+							<img width='15%' align='left' style='margin-right:10px' ng-src='https://gallerie.blob.core.windows.net/images/{{item.file}}' onerror="this.src='https://gallerie.blob.core.windows.net/packages/no-img.jpg'"/>					
+							<p>{{item.description}}</p>
+							<p>
+								<div class="thumbButton2" name="{{item.link}}" id="{{item.category}}"s></div>
+							</p>
+						</div>
+					</div>	
+					<div style="width: 30%" ng-show="item.captures.length > 0">
+					    <carousel interval="myInterval">
+					      <slide ng-repeat="slide in slides" active="slide.active" ng-show="slide.itemName === name">
+					        <img ng-src="{{slide.image}}" style="margin:auto; width:100%; height:100%">
+					        <div class="carousel-caption">
+					          <h4>Slide {{$index}}</h4>
+					          <p>{{slide.text}}</p>
+					        </div>
+					      </slide>
+					    </carousel>
+					</div>
+				</div>
+			</div>		
+			
+			<div class="row" ng-show="containerCtrl.isSelected(2)" ng-cloak>
+				<div class="col-sm-12 col-md-8 col-md-offset-2 border-top-radius">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3>Ajouter une application</h3>	
+						</div>
+
+						<div class="panel-body">
+							<form name="addProductForm" method="POST" enctype="multipart/form-data" action="/gallery/addProduct" novalidate>
+								<fieldset>
+									<div class="form-group">
+										<label for="inputName">Nom</label>
+										<input type="text" class="form-control" name="inputName" id="inputName" placeholder="Nom" ng-minlength="3" required>
+									</div>
+									<div class="form-group">
+										<label for="inputDescription">Description</label>
+										<input type="textarea" class="form-control" name="inputDescription" id="inputDescription" placeholder="Description" required>
+									</div>
+									<div class="form-group">
+										<label for="inputCategory">Catégorie</label>	
+										<select ng-model="appDropDown" class="form-control" name="inputCategory" id="inputCategory">
+											<option value="Activities">Activities</option>	
+											<option value="Dashboards">Dashboards</option>
+											<option value="Mobile Apps">Mobile Apps</option>
+											<option value="Workflows">Workflows</option>
+										</select>
+									</div>
+									<div class="form-group"  ng-show="(appDropDown=='Activities')||(appDropDown=='Dashboards')">
+										<label for="inputSubCategory">Applications</label><br />
+										<p> Sélectionnez le/les application(s) correspondante(s)</p>
+										<select class="form-control" name="inputSelectApplication" id="inputSelectApplication" multiple="multiple" ng-required="(appDropDown=='Activities')||(appDropDown=='Dashboards')">
+											<option value="admin">Administration</option>
+						                    <option value="compta">Comptabilité</option>
+						                    <option value="demat">Dématérialisation</option>
+						                    <option value="ndf">Note de frais</option>
+						                    <option value="prop">Processus opérationnelles</option>
+						                    <option value="budget">Budget</option>
+						                    <option value="immo">Immobilisation</option>
+						                    <option value="rappro">Rapprochement bancaire</option>
+						                    <option value="treso">Trésorerie</option>
+						                    <option value="paiement">Moyens de paiements</option>
+						                    <option value="garantfi">Garanties financières</option>
+										</select>								
+									</div>
+									<div class="form-group">
+										<label for="inputImage">Icone</label>
+										<input type="file" accept=".jpg,.jpeg,.png" id="inputImage" name="inputImage" data-filename-placement="inside">
+									</div>
+									<div class="form-group">
+										<label for="inputPackage">Package</label>
+										<input type="file" accept=".zip,.mob" id="inputPackage" name="inputPackage" data-filename-placement="inside" required>
+									</div>
+									<div class="form-group">
+										<label for="inputCaptures">Images</label>
+										<input type="file" accept=".jpg,.jpeg,.png" id="inputCaptures" name="inputCaptures" data-filename-placement="inside" multiple>
+									</div>
+									<button type="submit" class="btn btn-primary">Envoyer</button>
+								</fieldset>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row" ng-show="containerCtrl.isSelected(3)" ng-cloak> <!-- containerCtrl.isSelected(3) -->
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3> Installation de {{itemInstalled}} </h3>	
+					</div>
+					<div class="panel-body">
+						<p ng-show="resultInstall != ''">{{resultInstall}}</p>
+						<img class="center-block" ng-show="resultInstall == ''" ng-src="https://gallerie.blob.core.windows.net/packages/loading.gif"></img>
+						<div style="margin-top: 10px;">
+							<a ng-click="containerCtrl.selectTab(0)">Retourner à la galerie</a>
+						</div>		
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+			var referrer = document.referrer;
+
+			if ((referrer.length > 0) && ((referrer.indexOf("/server/portal.l1000") > -1) || (referrer.indexOf("/gallery/product/install") >-1))){
+				$(".thumbButton").each(function(){$(this).append('<a name="install" class="btn btn-xs btn-danger" ng-click="containerCtrl.getInstall(item.link, item.category); containerCtrl.selectTab(3)">Installer</a>')});
+
+				$(".thumbButton2").each(function(){$(this).append('<a name="install" class="btn btn-xs btn-danger" ng-click="containerCtrl.getInstall(item.link, item.category); containerCtrl.selectTab(3)">Installer</a>')});
+			}
+			else{
+				$(".addProduct").append('<a id="addproduct" href="#" ng-click="containerCtrl.selectTab(2)">Ajouter une application</a>');
+				
+				$(".thumbButton").each(function(){$(this).append('<a name="download" class="btn btn-xs btn-success" href="/gallery/product/download?' + $(this).attr("name") + '">Télécharger</a>')}); 	
+
+				$(".thumbButton2").each(function(){$(this).append('<a name="download" class="btn btn-xs btn-success" href="/gallery/product/download?' + $(this).attr("name") + '">Télécharger</a>')});
+
+				// $(".thumbButton").each(function(){$(this).append('<a name="download" class="btn btn-xs btn-success" href="/gallery/product/download?' + $(this).attr("name") + '">Télécharger</a><button style="margin-left:2px;" type="button" class="btn btn-default btn-xs" ng-click="containerCtrl.setItemModification(item.link)"><span class="glyphicon glyphicon-pencil"></span>Modifier</button>')}); 	
+
+				// $(".thumbButton2").each(function(){$(this).append('<a name="download" class="btn btn-xs btn-success" href="/gallery/product/download?' + $(this).attr("name") + '">Télécharger</a><button style="margin-left:2px;" type="button" class="btn btn-default btn-xs" ng-click="containerCtrl.setItemModification(item.link)"><span class="glyphicon glyphicon-pencil"></span>Modifier</button>')}); 	 
+			}	
+
+			$("#inputImage").fileinput({'showUpload':false, 'previewFileType':'any'});
+			$("#inputPackage").fileinput({'showUpload':false, 'showPreview':false});
+			$("#inputCaptures").fileinput({'initialDelimiter':'10','showUpload':false});
+			
+			$(function(){				
+				$.getJSON( "http://www.telize.com/jsonip", function(data){
+					if(data.ip == '193.30.141.1' || data.ip == '193.30.141.2'){
+						$('#addproduct').attr('class','ng-show');
+					}
+				});	
+
+				$("#inputSelectApplication").multiselect({
+		            includeSelectAllOption: true,
+		            selectAllValue: 'select-all-value'
+		        });
+			});
+
+			(function(){
+				var app = angular.module('gallery',['ui.bootstrap']);
+
+				app.directive('bar2', function($timeout){
+					return{
+						restrict : 'A',
+						link : function(scope, element, attr){
+							$(element).mosaic({
+								animation:'slide' //fade or slide
+							});
+						}
+					}
+				});
+
+				app.controller('ContainerController', ['$scope', '$http', function($scope, $http){
+					this.tab = 0;	
+					$scope.resultInstall = "";
+					$scope.itemInstalled = "";
+					$scope.itemModified = "";	
+					
+					this.selectTab = function(setTab){
+						this.tab = setTab;
+					}
+					
+					this.isSelected = function(checkTab){
+						return this.tab == checkTab;
+					}
+
+					this.getInstall = function(name, category){
+						$scope.resultInstall = "";
+						$scope.itemInstalled = name;
+
+						$http.get('/gallery/product/install?name=' + name + '&category=' + category).
+						success(function(data, status, headers, config){
+							$scope.resultInstall = data.Reason;
+						}).
+						error(function(data){
+							$scope.resultInstall = "Installation échouée";
+							$scope.itemInstalled = name;
+						});
+					};
+
+					this.isAppExist = function(app){
+						var res = false;
+						angular.forEach($scope.items, function(key,value){
+							angular.forEach(key.application, function(appKey, appValue){
+								if(appKey === app)
+									res = true;
+							});
+						});
+						return res;
+					}
+
+					this.setItemModification = function(itemName){
+						this.selectTab(4);
+						angular.forEach(items, function(item, key){
+							if(item.name = itemName)
+								$scope.itemModified = item;
+						});
+					}
+				}]);
+				
+				app.controller('ItemController',['$scope', '$http', function($scope, $http){	
+					$scope.category = '';  
+					$scope.application = '';
+					$scope.name = '';
+					$scope.items = [];
+					$scope.slides = [];
+					$scope.myInterval = 5000;
+
+					this.init = function(){
+						$http.get('/gallery/getPackageJSON').success(function(data){
+						// $.get('/getPackageJSON', function(data){	
+							$scope.items = data;
+							angular.forEach(data, function(value,key){
+								angular.forEach(value.captures, function(captures, keyCap){
+									$scope.slides.push({
+										image : "https://gallerie.blob.core.windows.net/images/"+ captures.capture,
+										itemName : value.name
+									});
+								});						
+							});
+						});
+					};
+
+					this.init();
+						
+					this.setCategory = function(category){
+						$scope.application = '';
+						if(category == 'All'){
+							$scope.category = '';
+						}
+						else
+							$scope.category = category;
+					};
+
+					this.setApp = function(app){
+						$scope.application = app;
+					}
+
+					this.setItem = function(name){
+						$scope.name = name;
+					};
+
+					this.hideItem = function(item){
+						var res = true;
+
+						if (($scope.category == '') || (($scope.category != '') && (item.category == $scope.category))){
+							if(($scope.application != '') && ($scope.category == item.category) && (($scope.category == 'Dashboards') || ($scope.category == 'Activities'))){
+								if((item.category == $scope.category) && ($scope.application != '')){
+									angular.forEach(item.application, function(key, value){
+										if (key == $scope.application){
+											res = false;
+										}								
+									});
+								}
+							}
+							else
+								res = false;
+						}
+						return res;
+					};
+				}]);
+				angular.bootstrap(document,['gallery']);
+			})();
+		</script>
+	<script type="application/javascript" src="/gallery/javascripts/mosaic.1.0.1.min.js"></script>	
+	<script type="application/javascript" src="/gallery/javascripts/bootstrap-multiselect.js"></script>	
+	<script type="application/javascript" src="/gallery/javascripts/bootstrap.file-input.js"></script>
+</body>
+</html>
