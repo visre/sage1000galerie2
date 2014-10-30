@@ -62,22 +62,14 @@ app.use(function(err, req, res, next) {
     });
 });
 
-// function Init(){
-//     // Get index.json
-//     blobService.getBlobToFile(index_container, 'packages.json', __dirname + '/databases/packages.json', function(error, result, response){
-//     });
-// };
-
-// Init();
-
-// app.get('/gallery/getPackageJSON', function(req, res){
-//     jf.readFile(__dirname + '/databases/packages.json', function (err, obj){
-//         res.send(obj);  
-//     });
-// });
-
-app.listen(3000, function () {
-console.log("express has started on port 3000");
+app.get('/gallery/getPackageJSON', function(req, res){
+    jf.readFile(__dirname + '/databases/packages.json', function (err, obj){
+        res.send(obj);  
+    });
 });
+
+// app.listen(3000, function () {
+// console.log("express has started on port 3000");
+// });
 
 module.exports = app;
