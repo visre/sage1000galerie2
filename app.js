@@ -48,7 +48,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
+// app.use('/', routes);
+
+app.get('/gallery', function (req, res){
+    res.render('index');
+});
 
 app.get('/gallery/product/download', function(req, res){
     var item = url.parse(req.url).query;
