@@ -16,6 +16,14 @@ var fs = require('fs');
 var jf = require('jsonfile');
 var url = require('url');
 
+var storage_account = 'gallerie';
+var gallerieKey = 'SiQVY98VhO+NI1m6jfBMgB1M/00geM/puCgpMpRvsBSUz0H/xcgF77Wx9SiD7buJFvXZ9NTvyRNvf200CNT6Kg==';
+var package_container = 'packages';
+var index_container = 'descriptifs';
+var images_container = 'images';
+
+var blobService = azure.createBlobService(storage_account,gallerieKey);
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.engine('html', require('ejs').renderFile);
@@ -62,14 +70,22 @@ app.use(function(err, req, res, next) {
     });
 });
 
+function Init(){
+    // Get index.json
+    blobService.getBlobToFile(index_container, 'packages.json', __dirname + '/databases/packages.json', function(error, result, response){
+    });
+};
+
+Init();
+
 app.get('/gallery/getPackageJSON', function(req, res){
     jf.readFile(__dirname + '/databases/packages.json', function (err, obj){
         res.send(obj);  
     });
 });
 
-// app.listen(3000, function () {
-// console.log("express has started on port 3000");
-// });
+app.listen(3000, function () {
+console.log("express has started on port 3000");
+});
 
 module.exports = app;
