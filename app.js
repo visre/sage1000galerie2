@@ -70,11 +70,11 @@ function Init(){
 
 Init();
 
-app.get('/gallery/getPackageJSON', function(req, res){
-    jf.readFile(__dirname + '/databases/packages.json', function (err, obj){
-        res.send(obj);  
-    });
-});
+// app.get('/gallery/getPackageJSON', function(req, res){
+//     jf.readFile(__dirname + '/databases/packages.json', function (err, obj){
+//         res.send(obj);  
+//     });
+// });
 
 app.listen(3000, function () {
 console.log("express has started on port 3000");
