@@ -29,6 +29,12 @@ app.set('views', path.join(__dirname, 'views'));
 app.engine('html', require('ejs').renderFile);
 app.set('view engine', 'html');
 
+app.get('/gallery/getPackageJSON', function(req, res){
+    jf.readFile(__dirname + '/databases/packages.json', function (err, obj){
+        res.send(obj);  
+    });
+});
+
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
@@ -70,15 +76,16 @@ app.use(function(err, req, res, next) {
     });
 });
 
-app.get('/gallery/getPackageJSON', function(req, res){
-    jf.readFile(__dirname + '/databases/packages.json', function (err, obj){
-        res.send(obj);  
+function Init(){
+    // Get index.json
+    blobService.getBlobToFile(index_container, 'packages.json', __dirname + '/databases/packages.json', function(error, result, response){
     });
-});
+};
+
+Init();
 
 app.listen(3000, function () {
-	blobService.getBlobToFile(index_container, 'packages.json', __dirname + '/databases/packages.json', function(error, result, response){});
-	console.log("express has started on port 3000");
+console.log("express has started on port 3000");
 });
 
 module.exports = app;
