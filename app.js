@@ -45,6 +45,40 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 
+app.get('/gallery/product/download', function(req, res){
+    var item = url.parse(req.url).query;
+    var filePath = packages_folder + item + '.zip';
+    blobService.getBlobToFile(package_container, item + '.zip', filePath, function(error, result, response){
+        if(!error){
+            var returnHeaders = {};
+            returnHeaders['Content-Disposition'] = 'attachment; filename="'+ item +'.zip"';
+            returnHeaders['Content-Type'] = 'application/zip';
+            returnHeaders['Connection'] = "close";
+            res.writeHead(200, returnHeaders); 
+            var stream = fs.createReadStream(filePath);
+            stream.on('open', function () {     
+                stream.pipe(res);
+            });
+            stream.on('end', function () {
+                res.end();
+            });         
+        }
+        else{
+            res.render('unfind');
+            console.log(error);
+        }
+    });         
+});
+
+app.get('/gallery/product/install', function(req, res){
+    var adresse = { 
+        "name" : req.query.name,
+        "blobUrl" : '/gallery/product/download?' + req.query.name,
+        "category" : req.query.category
+    };
+    res.end(JSON.stringify(adresse));
+});
+
 // // catch 404 and forward to error handler
 // app.use(function(req, res, next) {
 //     var err = new Error('Not Found');
