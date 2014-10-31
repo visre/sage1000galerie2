@@ -19,6 +19,7 @@ var url = require('url');
 var storage_account = 'gallerie';
 var gallerieKey = 'SiQVY98VhO+NI1m6jfBMgB1M/00geM/puCgpMpRvsBSUz0H/xcgF77Wx9SiD7buJFvXZ9NTvyRNvf200CNT6Kg==';
 var package_container = 'packages';
+var packages_folder = __dirname + '/databases/packages/';
 var index_container = 'descriptifs';
 var images_container = 'images';
 
