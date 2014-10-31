@@ -86,7 +86,7 @@
 	    </div>
 	    <div class="container">	
 			<div class="row" id="content" ng-show="containerCtrl.isSelected(0)" ng-cloak>	
-				<div bar2 class="mosaic-block bar2" ng-repeat="item in items" ng-hide="itemCtrl.hideItem(item)">
+				<div bar2 class="mosaic-block bar2" ng-repeat="item in items | startFrom:currentPage*pageSize | limitTo:pageSize" ng-hide="itemCtrl.hideItem(item)">
 					<a style="text-decoration:none;" class="mosaic-overlay" href="#">
 						<div class="details">
 							<h4>{{item.name}}</h4><br/>
@@ -100,6 +100,14 @@
 					</div>
 				</div>
 				<div class="clearfix"></div>
+			    <button ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+			        Previous
+			    </button>
+			    {{currentPage+1}}/{{numberOfPages()}}
+			    <button ng-disabled="currentPage >= items.length/pageSize - 1" ng-click="currentPage=currentPage+1">
+			        Next
+			    </button>
+
 			</div>
 
 			<div class="row" ng-show="containerCtrl.isSelected(1)" ng-cloak>
@@ -261,11 +269,23 @@
 					}
 				});
 
+				app.filter('startFrom', function() {
+				    return function(input, start) {
+				        start = +start; //parse to int
+				        return input.slice(start);
+				    }
+				});
+
 				app.controller('ContainerController', ['$scope', '$http', function($scope, $http){
 					this.tab = 0;	
 					$scope.resultInstall = "";
 					$scope.itemInstalled = "";
 					$scope.itemModified = "";	
+					$scope.currentPage = 0;
+ 					$scope.pageSize = 15;
+ 					$scope.numberOfPages=function(){
+				        return Math.ceil($scope.items.length/$scope.pageSize);                
+				    }
 					
 					this.selectTab = function(setTab){
 						this.tab = setTab;
